@@ -41,12 +41,12 @@ contract FlamingoTokenWithExtensionsTest is Test {
 
     // ============ Initialization Tests ============
 
-    function testInitialSupply() public {
+    function testInitialSupply() public view {
         assertEq(token.totalSupply(), TOTAL_SUPPLY);
         assertEq(token.balanceOf(address(token)), TOTAL_SUPPLY);
     }
 
-    function testAllocations() public {
+    function testAllocations() public view {
         assertEq(token.COMMUNITY_ALLOCATION(), 30_000_000_000 * 10 ** 18);
         assertEq(token.TEAM_ALLOCATION(), 20_000_000_000 * 10 ** 18);
         assertEq(token.PROJECT_ALLOCATION(), 30_000_000_000 * 10 ** 18);

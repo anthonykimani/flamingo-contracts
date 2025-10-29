@@ -47,19 +47,19 @@ contract FlamingoTokenWithExtensions is ERC20, Ownable, ReentrancyGuard {
     event AirdropClaimed(address indexed user, uint256 amount);
     
     constructor(
-        string memory name,
-        string memory symbol,
-        string memory description,
-        string memory telegram,
-        string memory website,
-        string memory twitter,
-        string memory farcaster
-    ) ERC20(name, symbol) Ownable(msg.sender) {
-        _description = description;
-        _telegram = telegram;
-        _website = website;
-        _twitter = twitter;
-        _farcaster = farcaster;
+        string memory name_,
+        string memory symbol_,
+        string memory description_,
+        string memory telegram_,
+        string memory website_,
+        string memory twitter_,
+        string memory farcaster_
+    ) ERC20(name_, symbol_) Ownable(msg.sender) {
+        _description = description_;
+        _telegram = telegram_;
+        _website = website_;
+        _twitter = twitter_;
+        _farcaster = farcaster_;
         
         // Mint entire supply to contract
         // Owner will distribute according to tokenomics
