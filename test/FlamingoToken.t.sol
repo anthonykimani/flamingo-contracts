@@ -30,7 +30,7 @@ contract FlamingoTokenWithExtensionsTest is Test {
 
         token = new FlamingoTokenWithExtensions(
             "Flamingo",
-            "FLAM",
+            "FLAMINGO",
             "Quiz rewards token",
             "https://t.me/flamingo",
             "https://flamingo.app",

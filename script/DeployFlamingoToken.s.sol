@@ -9,7 +9,7 @@ contract DeployWithExtensions is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         
         string memory name = vm.envOr("TOKEN_NAME", string("Flamingo"));
-        string memory symbol = vm.envOr("TOKEN_SYMBOL", string("FLAM"));
+        string memory symbol = vm.envOr("TOKEN_SYMBOL", string("FLAMINGO"));
         string memory description = vm.envOr("TOKEN_DESCRIPTION", string("Flamingo quiz rewards token"));
         string memory telegram = vm.envOr("TELEGRAM_LINK", string("https://t.me/flamingo"));
         string memory website = vm.envOr("WEBSITE_LINK", string("https://flamingo.app"));
