@@ -581,5 +581,25 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 This smart contract is provided as-is. While it has been thoroughly tested, it has not been formally audited. Use at your own risk. Always test on testnets before mainnet deployment.
 
 ---
+== Logs ==
+  
+=== Deployment Configuration ===
+  Chain ID: 84532
+  Deployer: 0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1
+  USDC: 0x036CbD53842c5426634e7929541eC2318f3dCF7e
+  Treasury: 0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1
+  Backend Signer: 0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1
+  
+=== Deploying FlamingoEscrow ===
+  
+=== Deployment Successful ===
+  FlamingoEscrow: 0xFa1F7F1c6e66B35087E22D7F0e7A1bB082FEf7f8
+  Block: 33074533
+  
+=== Verifying Configuration ===
+  Platform Fee: 10 %
+  First Place: 50 %
+  Second Place: 30 %
+  Third Place: 20 %
 
 **Built with ❤️ by the Flamingo Team**
