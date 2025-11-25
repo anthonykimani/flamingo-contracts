@@ -64,10 +64,7 @@ contract DeployFlamingoEscrow is Script {
     
     function printDeploymentInfo(address escrow, address usdc) internal view {
         console2.log("\n");
-        console2.log("=".repeat(60));
         console2.log("DEPLOYMENT COMPLETE - SAVE THIS INFO");
-        console2.log("=".repeat(60));
-        console2.log("");
         console2.log("Network: Base Sepolia");
         console2.log("Chain ID:", block.chainid);
         console2.log("");
@@ -77,15 +74,12 @@ contract DeployFlamingoEscrow is Script {
         console2.log("Explorer:");
         console2.log("https://sepolia.basescan.org/address/", escrow);
         console2.log("");
-        console2.log("=".repeat(60));
         console2.log("UPDATE YOUR BACKEND .env WITH:");
-        console2.log("=".repeat(60));
         console2.log("");
         console2.log("ESCROW_CONTRACT_ADDRESS=", escrow);
         console2.log("USDC_ADDRESS=", usdc);
         console2.log("RPC_URL=https://sepolia.base.org");
         console2.log("");
-        console2.log("=".repeat(60));
     }
     
     function getUSDCAddress() internal view returns (address) {

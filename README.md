@@ -14,6 +14,8 @@ A secure, gas-optimized escrow system for quiz game deposits and automated prize
 - [Security](#security)
 - [Gas Optimization](#gas-optimization)
 - [Deployment](#deployment)
+- [Verification](#verification)
+- [Troubleshooting](#troubleshooting)
 - [Backend Integration](#backend-integration)
 - [License](#license)
 
@@ -136,7 +138,7 @@ function isPlayerInGame(bytes32 gameSessionId, address player) external view ret
 ## 🚀 Installation
 
 ### Prerequisites
-- [Foundry](https://book.getfoundry.sh/getting-started/installation) installed
+- [Foundry](https://book.getfoundry.sh/getting-started/installation  ) installed (v1.4.4+)
 - Node.js 16+ (for backend integration)
 - Git
 
@@ -158,10 +160,97 @@ forge test
 
 # Run tests with gas reporting
 forge test --gas-report
-
-# Run tests with detailed output
-forge test -vvv
 ```
+
+## 🛠️ Build & Compile Commands
+
+### Compilation
+```bash
+# Build all contracts
+forge build
+
+# Build with specific optimization
+forge build --optimize --optimizer-runs 200
+
+# Clean build artifacts
+forge clean && forge build
+
+# Check compilation without building
+forge build --dry-run
+```
+
+### Testing & Validation
+```bash
+# Run full test suite
+forge test
+
+# Run specific test
+forge test --match-test testDistributePrizes
+
+# Run with gas report
+forge test --gas-report
+
+# Run with detailed traces
+forge test -vvv
+
+# Check contract sizes
+forge build --sizes
+
+# Generate coverage report
+forge coverage
+```
+
+## 🎯 Deployment Commands
+
+### Recommended: Solidity Script (Most Reliable)
+```bash
+# Deploy with Solidity script (handles verification automatically)
+forge script script/DeployFlamingoEscrow.s.sol \
+  --tc DeployFlamingoEscrow \
+  --rpc-url https://sepolia.base.org \
+  --private-key $PRIVATE_KEY \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --chain base-sepolia
+
+# Deploy to mainnet (use Ledger hardware wallet)
+forge script script/DeployFlamingoEscrow.s.sol \
+  --tc DeployFlamingoEscrow \
+  --rpc-url $MAINNET_RPC_URL \
+  --ledger \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --chain base
+```
+
+### Alternative: Direct Contract Creation
+```bash
+# Deploy contract only (skip verification)
+forge create src/FlamingoEscrow.sol:FlamingoEscrow \
+  --rpc-url https://sepolia.base.org \
+  --private-key $PRIVATE_KEY \
+  --constructor-args "0xUSDC_ADDRESS" "0xTREASURY_ADDRESS" "0xBACKEND_SIGNER" \
+  --broadcast
+
+# Then verify separately (see Verification section)
+```
+
+### Environment Setup
+Create a `.env` file in your project root:
+```bash
+# Required for deployment
+PRIVATE_KEY=0x...
+ETHERSCAN_API_KEY=8VH51ZYHTX5D29XSPMQGE2ASU38IDQ2KWB
+
+# Contract Configuration (optional, for scripts)
+USDC_ADDRESS=0x036CbD53842c5426634e7929541eC2318f3dCF7e
+TREASURY_ADDRESS=0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1
+BACKEND_SIGNER=0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1
+```
+
+**⚠️ Security Note**: Never commit `.env` files. Add to `.gitignore`.
 
 ## 💻 Usage
 
@@ -315,33 +404,6 @@ Suite result: ok. 25 passed; 0 failed; 0 skipped
 3. **Platform Fee**: Fixed 10% fee (not configurable post-deployment)
 4. **Minimum Players**: Games require minimum 3 players
 
-### Signature Format
-
-The contract uses EIP-191 compliant signatures:
-
-```javascript
-// Message Hash
-const messageHash = ethers.utils.keccak256(
-    ethers.utils.defaultAbiCoder.encode(
-        ['address', 'uint256', 'bytes32', 'address', 'address', 'address'],
-        [contractAddress, chainId, gameSessionId, winner1, winner2, winner3]
-    )
-);
-
-// Ethereum Signed Message
-const ethSignedMessageHash = ethers.utils.keccak256(
-    ethers.utils.solidityPack(
-        ['string', 'bytes32'],
-        ['\x19Ethereum Signed Message:\n32', messageHash]
-    )
-);
-
-// Sign
-const signature = await backendSigner.signMessage(
-    ethers.utils.arrayify(ethSignedMessageHash)
-);
-```
-
 ## ⚡ Gas Optimization
 
 ### Benchmarks
@@ -362,62 +424,115 @@ const signature = await backendSigner.signMessage(
 4. **Storage Packing**: Efficient struct layout
 5. **SafeERC20**: Only for necessary safety checks
 
-## 🚀 Deployment
+## ✅ Verification
 
-### Environment Setup
+### Automated Verification (Recommended)
 
-Create a `.env` file:
-```bash
-PRIVATE_KEY=your_private_key
-USDC_ADDRESS=0x... # USDC contract address
-TREASURY_ADDRESS=0x... # Platform treasury address
-BACKEND_SIGNER=0x... # Backend signer address
-RPC_URL=https://...
-ETHERSCAN_API_KEY=your_api_key
-```
-
-### Deploy Script
+When using `forge script` with `--verify` flag, verification is automatic. For manual verification:
 
 ```bash
-# Deploy to testnet
-forge create --rpc-url $RPC_URL \
-    --private-key $PRIVATE_KEY \
-    --constructor-args $USDC_ADDRESS $TREASURY_ADDRESS $BACKEND_SIGNER \
-    --verify \
-    --etherscan-api-key $ETHERSCAN_API_KEY \
-    src/FlamingoEscrow.sol:FlamingoEscrow
+# Create constructor arguments file (192 hex characters, no 0x, no newline)
+# Format: USDC_ADDRESS (32 bytes) + TREASURY_ADDRESS (32 bytes) + BACKEND_SIGNER (32 bytes)
+printf "%s" "000000000000000000000000036cbd53842c5426634e7929541ec2318f3dcf7e0000000000000000000000004a8e770a33631bb909c424caa8c48bbc28be96b10000000000000000000000004a8e770a33631bb909c424caa8c48bbc28be96b1" > args.txt
 
-# Deploy to mainnet (use hardware wallet)
-forge create --rpc-url $MAINNET_RPC_URL \
-    --ledger \
-    --constructor-args $USDC_ADDRESS $TREASURY_ADDRESS $BACKEND_SIGNER \
-    --verify \
-    --etherscan-api-key $ETHERSCAN_API_KEY \
-    src/FlamingoEscrow.sol:FlamingoEscrow
+# Verify contract
+forge verify-contract DEPLOYED_CONTRACT_ADDRESS \
+  src/FlamingoEscrow.sol:FlamingoEscrow \
+  --chain base-sepolia \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --constructor-args-path args.txt \
+  --num-of-optimizations 200 \
+  --watch
 ```
 
-### Post-Deployment Checklist
+### API Key Requirements
 
-- [ ] Verify contract on block explorer
-- [ ] Test deposit function with small amount
-- [ ] Verify backend signer can create games
-- [ ] Test full game flow on testnet
-- [ ] Set up monitoring/alerts
-- [ ] Document deployed addresses
-- [ ] Update frontend with contract address
+**⚠️ IMPORTANT**: Basescan now requires **Etherscan API V2** (Universal API Key):
+- Get your key from https://etherscan.io/myapikey
+- Legacy Basescan keys are deprecated
+- Format: `8VH51ZYHTX5D29XSPMQGE2ASU38IDQ2KWB`
 
-### Supported Networks
+### Manual Verification
 
-The contract can be deployed on any EVM-compatible network:
+If automated verification fails, use the form at:
+`https://sepolia.basescan.org/verifyContract`
 
-- ✅ Ethereum Mainnet
-- ✅ Polygon
-- ✅ Arbitrum
-- ✅ Optimism
-- ✅ Base
-- ✅ Avalanche
-- ✅ BSC
-- ✅ Any network supported by [Pimlico](https://docs.pimlico.io/infra/platform/supported-chains)
+**Required Parameters:**
+- **Compiler**: Solidity v0.8.20+commit.a1b79de6
+- **Optimization**: Yes, 200 runs
+- **Constructor Arguments**: Concatenated ABI-encoded addresses (192 hex chars)
+- **License**: MIT
+
+## 🔧 Troubleshooting
+
+### Common Issues & Solutions
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `add --broadcast to previous command` | `--broadcast` not recognized in complex commands | Use **forge script** approach instead |
+| `Multiple contracts in target path` | Script has multiple contracts | Add `--tc ContractName` flag |
+| `Member "repeat" not found` | Used JavaScript `.repeat()` in Solidity | Use plain strings or loops in Solidity |
+| `Could not detect deployment` | No RPC URL or wrong network | Verify RPC URL and chain ID |
+| `invalid string length` | Constructor args have 0x prefix or newline | Use `printf "%s" "hexstring" > args.txt` |
+| `unexpected argument` | Shell parsing error | Pass args as single hex string or use file |
+| `NOTOK - deprecated V1 endpoint` | Old Basescan API key | **Use Etherscan Universal API Key** |
+| `Invalid API Key` | Wrong key format | Key must be from etherscan.io, not basescan.org |
+
+### Constructor Arguments Format
+
+**Correct:** 192 hex characters, no 0x prefix, no newline
+```
+000000000000000000000000036cbd53842c5426634e7929541ec2318f3dcf7e0000000000000000000000004a8e770a33631bb909c424caa8c48bbc28be96b10000000000000000000000004a8e770a33631bb909c424caa8c48bbc28be96b1
+```
+
+**Wrong:**
+```
+0x0000... (with 0x prefix)
+0000\n (with newline)
+0x000...\n (both)
+```
+
+### Getting Contract Address from Transaction
+
+```bash
+# If you lost your contract address
+cast receipt $DEPLOY_TX_HASH \
+  --rpc-url https://sepolia.base.org \
+  --field contractAddress
+```
+
+## 📦 Live Deployments
+
+### Base Sepolia (Chain ID: 84532)
+
+**Contract Address**: `0x8a0E220d6f5250D2aA3273a634387546e671573D`  
+**Block**: 34136618  
+**Deployer**: `0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1`  
+**Status**: ✅ Verified  
+**Explorer**: https://sepolia.basescan.org/address/0x8a0e220d6f5250d2aa3273a634387546e671573d#code
+
+**Deployment Transaction**: `0x08135f3199f76645f0f0227ad51c13c13ae6ccb95966a7ccd99ca781c98c0c3b`
+
+**Configuration:**
+- Platform Fee: 10%
+- First Place: 50%
+- Second Place: 30%
+- Third Place: 20%
+- USDC: `0x036CbD53842c5426634e7929541eC2318f3dCF7e`
+- Treasury: `0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1`
+- Backend Signer: `0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1`
+
+**Successful Deployment Command Used:**
+```bash
+forge script script/DeployFlamingoEscrow.s.sol \
+  --tc DeployFlamingoEscrow \
+  --rpc-url https://sepolia.base.org \
+  --private-key "$PRIVATE_KEY" \
+  --broadcast \
+  --verify \
+  --etherscan-api-key "$ETHERSCAN_API_KEY" \
+  --chain base-sepolia
+```
 
 ## 🔗 Backend Integration
 
@@ -581,25 +696,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 This smart contract is provided as-is. While it has been thoroughly tested, it has not been formally audited. Use at your own risk. Always test on testnets before mainnet deployment.
 
 ---
-== Logs ==
-  
-=== Deployment Configuration ===
-  Chain ID: 84532
-  Deployer: 0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1
-  USDC: 0x036CbD53842c5426634e7929541eC2318f3dCF7e
-  Treasury: 0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1
-  Backend Signer: 0x4A8E770a33631Bb909c424CaA8C48BbC28Be96b1
-  
-=== Deploying FlamingoEscrow ===
-  
-=== Deployment Successful ===
-  FlamingoEscrow: 0xFa1F7F1c6e66B35087E22D7F0e7A1bB082FEf7f8
-  Block: 33074533
-  
-=== Verifying Configuration ===
-  Platform Fee: 10 %
-  First Place: 50 %
-  Second Place: 30 %
-  Third Place: 20 %
 
 **Built with ❤️ by the Flamingo Team**
