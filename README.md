@@ -534,6 +534,44 @@ forge script script/DeployFlamingoEscrow.s.sol \
   --chain base-sepolia
 ```
 
+
+# 🎉 SUCCESS! Base Mainnet (Chain ID: 8453)
+
+## ✅ Deployment Summary
+
+**🚀 Contract Address**: `0x482D7c8626cf7BeEA5299179aaB5c22c8aBA93E1`  
+**🔍 Verified on Basescan**: https://basescan.org/address/0x482d7c8626cf7beea5299179aab5c22c8aba93e1  
+**📦 Block**: 38631385  
+**⛽ Gas Used**: 3,821,097 gas  
+**💰 Cost**: 0.000004344 ETH (~$0.013)
+
+## 📋 Contract Configuration
+- **Chain**: Base Mainnet (Chain ID: 8453)
+- **USDC**: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
+- **Platform Treasury**: `0xfA1316fE4b4a572F5F701f75A97bae933a24B748`
+- **Backend Signer**: `0xfA1316fE4b4a572F5F701f75A97bae933a24B748`
+- **Platform Fee**: 10%
+- **Prize Split**: 50%/30%/20%
+
+---
+
+**Deployment Command:**
+```bash
+forge script script/DeployFlamingoEscrow.s.sol \
+  --tc DeployFlamingoEscrow \
+  --rpc-url https://mainnet.base.org \
+  --private-key $PRIVATE_KEY \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --chain base
+```
+
+## 📊 Production Configuration
+
+Update your backend `.env`:
+
+
 ## 🔗 Backend Integration
 
 ### Node.js Example
