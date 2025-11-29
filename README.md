@@ -408,13 +408,13 @@ Suite result: ok. 25 passed; 0 failed; 0 skipped
 
 ### Benchmarks
 
-| Operation | Gas Cost | Notes |
-|-----------|----------|-------|
-| Deposit | ~84,000 | First deposit for game |
-| Create Game (3 players) | ~482,000 | Includes fee transfer |
-| Distribute Prizes | ~560,000 | 3 winner payouts |
-| Refund | ~77,000 | Before game creation |
-| Player Lookup | <5,000 | O(1) mapping lookup |
+| Operation               | Gas Cost | Notes                  |
+| ----------------------- | -------- | ---------------------- |
+| Deposit                 | ~84,000  | First deposit for game |
+| Create Game (3 players) | ~482,000 | Includes fee transfer  |
+| Distribute Prizes       | ~560,000 | 3 winner payouts       |
+| Refund                  | ~77,000  | Before game creation   |
+| Player Lookup           | <5,000   | O(1) mapping lookup    |
 
 ### Optimization Techniques
 
@@ -467,16 +467,16 @@ If automated verification fails, use the form at:
 
 ### Common Issues & Solutions
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `add --broadcast to previous command` | `--broadcast` not recognized in complex commands | Use **forge script** approach instead |
-| `Multiple contracts in target path` | Script has multiple contracts | Add `--tc ContractName` flag |
-| `Member "repeat" not found` | Used JavaScript `.repeat()` in Solidity | Use plain strings or loops in Solidity |
-| `Could not detect deployment` | No RPC URL or wrong network | Verify RPC URL and chain ID |
-| `invalid string length` | Constructor args have 0x prefix or newline | Use `printf "%s" "hexstring" > args.txt` |
-| `unexpected argument` | Shell parsing error | Pass args as single hex string or use file |
-| `NOTOK - deprecated V1 endpoint` | Old Basescan API key | **Use Etherscan Universal API Key** |
-| `Invalid API Key` | Wrong key format | Key must be from etherscan.io, not basescan.org |
+| Error                                 | Cause                                            | Solution                                        |
+| ------------------------------------- | ------------------------------------------------ | ----------------------------------------------- |
+| `add --broadcast to previous command` | `--broadcast` not recognized in complex commands | Use **forge script** approach instead           |
+| `Multiple contracts in target path`   | Script has multiple contracts                    | Add `--tc ContractName` flag                    |
+| `Member "repeat" not found`           | Used JavaScript `.repeat()` in Solidity          | Use plain strings or loops in Solidity          |
+| `Could not detect deployment`         | No RPC URL or wrong network                      | Verify RPC URL and chain ID                     |
+| `invalid string length`               | Constructor args have 0x prefix or newline       | Use `printf "%s" "hexstring" > args.txt`        |
+| `unexpected argument`                 | Shell parsing error                              | Pass args as single hex string or use file      |
+| `NOTOK - deprecated V1 endpoint`      | Old Basescan API key                             | **Use Etherscan Universal API Key**             |
+| `Invalid API Key`                     | Wrong key format                                 | Key must be from etherscan.io, not basescan.org |
 
 ### Constructor Arguments Format
 
@@ -503,6 +503,16 @@ cast receipt $DEPLOY_TX_HASH \
 
 ## 📦 Live Deployments
 
+### Celo Sepolia (Chain ID: 11142220)
+
+**Contract Address**: `0x482D7c8626cf7BeEA5299179aaB5c22c8aBA93E1`  
+**Block**: 34136618  
+**Deployer**: `0xfA1316fE4b4a572F5F701f75A97bae933a24B748`  
+**Status**: ✅ Verified  
+**Explorer**: `https://celo-sepolia.blockscout.com/tx/0xafc69c8a8dad93066407697caf7a9ab5da7be746f652bbd5e672eefcc2778eda`
+
+**Deployment Transaction**: `0xafc69c8a8dad93066407697caf7a9ab5da7be746f652bbd5e672eefcc2778eda`
+
 ### Base Sepolia (Chain ID: 84532)
 
 **Contract Address**: `0x8a0E220d6f5250D2aA3273a634387546e671573D`  
@@ -512,6 +522,19 @@ cast receipt $DEPLOY_TX_HASH \
 **Explorer**: https://sepolia.basescan.org/address/0x8a0e220d6f5250d2aa3273a634387546e671573d#code
 
 **Deployment Transaction**: `0x08135f3199f76645f0f0227ad51c13c13ae6ccb95966a7ccd99ca781c98c0c3b`
+
+**Successful Deployment Command Used:**
+```bash
+forge script script/DeployFlamingoEscrow.s.sol \
+ --tc DeployFlamingoEscrow  \ 
+ --rpc-url https://forno.celo-sepolia.celo-testnet.org  \ 
+ --private-key "$PRIVATE_KEY" \  
+ --broadcast \  
+ --verify  \ 
+ --etherscan-api-key "$ETHERSCAN_API_KEY" \  
+ --chain celo-sepolia
+```
+
 
 **Configuration:**
 - Platform Fee: 10%
