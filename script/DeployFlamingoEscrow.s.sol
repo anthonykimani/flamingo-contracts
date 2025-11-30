@@ -13,23 +13,22 @@ contract DeployFlamingoEscrow is Script {
         address treasury = vm.envAddress("PLATFORM_TREASURY");
         address backendSigner = vm.envAddress("BACKEND_SIGNER");
         
-        address usdcAddress = getUSDCAddress(); // for USDC 
-        address cUSDAddress = getCUSDAddress(); // for cUSD
+        address usdcAddress = getUSDCAddress(); 
         
         console2.log("\n=== Deployment Configuration ===");
         console2.log("Chain ID:", block.chainid);
         console2.log("Deployer:", vm.addr(deployerPrivateKey));
-        console2.log("cUSD:", cUSDAddress);
+        console2.log("cUSD:", usdcAddress);
         console2.log("Treasury:", treasury);
         console2.log("Backend Signer:", backendSigner);
         
         vm.startBroadcast(deployerPrivateKey);
         
-        if (cUSDAddress == address(0)) {
+        if (usdcAddress == address(0)) {
             console2.log("\nDeploying Mock USDC...");
             MockUSDC mockUSDC = new MockUSDC();
-            cUSDAddress = address(mockUSDC);
-            console2.log("Mock USDC deployed at:", cUSDAddress);
+            usdcAddress = address(mockUSDC);
+            console2.log("Mock USDC deployed at:", usdcAddress);
             
             mockUSDC.mint(vm.addr(deployerPrivateKey), 1_000_000 * 1e6);
             console2.log("Minted 1M USDC to deployer");
@@ -37,7 +36,7 @@ contract DeployFlamingoEscrow is Script {
         
         console2.log("\n=== Deploying FlamingoEscrow ===");
         FlamingoEscrow escrow = new FlamingoEscrow(
-            cUSDAddress,
+            usdcAddress,
             treasury,
             backendSigner
         );
@@ -47,7 +46,7 @@ contract DeployFlamingoEscrow is Script {
         console2.log("Block:", block.number);
         
         console2.log("\n=== Verifying Configuration ===");
-        require(address(escrow.USDC()) == cUSDAddress, "USDC mismatch");
+        require(address(escrow.USDC()) == usdcAddress, "USDC mismatch");
         require(escrow.PLATFORM_TREASURY() == treasury, "Treasury mismatch");
         require(escrow.backendSigner() == backendSigner, "Signer mismatch");
         require(escrow.owner() == vm.addr(deployerPrivateKey), "Owner mismatch");
@@ -60,7 +59,7 @@ contract DeployFlamingoEscrow is Script {
         vm.stopBroadcast();
         
         // Print deployment info
-        printDeploymentInfo(address(escrow), cUSDAddress);
+        printDeploymentInfo(address(escrow), usdcAddress);
     }
     
     function printDeploymentInfo(address escrow, address usdc) internal view {
@@ -93,14 +92,6 @@ contract DeployFlamingoEscrow is Script {
         if (chainId == 421614) return 0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d;  // Arbitrum Sepolia
         if (chainId == 1) return 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;      // Mainnet
         
-        return address(0);
-    }
-
-    function getCUSDAddress() internal view returns (address) {
-        uint256 chainId = block.chainid;
-
-        if (chainId == 11142220) return 0xdE9e4C3ce781b4bA68120d6261cbad65ce0aB00b; // CUSD Sepolia
-
         return address(0);
     }
 }

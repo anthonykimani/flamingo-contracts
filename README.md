@@ -505,13 +505,13 @@ cast receipt $DEPLOY_TX_HASH \
 
 ### Celo Sepolia (Chain ID: 11142220)
 
-**Contract Address**: `0x482D7c8626cf7BeEA5299179aaB5c22c8aBA93E1`  
-**Block**: 34136618  
+**Contract Address**: `0x4b16ABb9aB45029fC423EdeF448b7Cc476C2cD78`  
+**Block**: 11212354  
 **Deployer**: `0xfA1316fE4b4a572F5F701f75A97bae933a24B748`  
 **Status**: ✅ Verified  
-**Explorer**: `https://celo-sepolia.blockscout.com/tx/0xafc69c8a8dad93066407697caf7a9ab5da7be746f652bbd5e672eefcc2778eda`
+**Explorer**: `https://celo-sepolia.blockscout.com/tx/0xf76d8b19c8a57eee0546b05a65801d7511a19def08a7537064fcef57dc15f954`
 
-**Deployment Transaction**: `0xafc69c8a8dad93066407697caf7a9ab5da7be746f652bbd5e672eefcc2778eda`
+**Deployment Transaction**: `0xf76d8b19c8a57eee0546b05a65801d7511a19def08a7537064fcef57dc15f954`
 
 ### Base Sepolia (Chain ID: 84532)
 
